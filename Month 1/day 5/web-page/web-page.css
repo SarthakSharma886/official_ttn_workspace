@@ -1,0 +1,132 @@
+body{
+    margin: 0px;
+    background-color: #3b3b3b;
+}
+#container{
+    width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+}
+#sc1{
+    background-color: #353535;
+}
+#header{
+    width: 960px;
+    margin: 0 auto;
+    height: fit-content;
+}
+
+.logo{
+    font-size: 35px;
+    color: #c3c0b7;
+    padding: 1% 0%;
+    font-weight: 600;
+}
+.nav {
+    background-color: #272727;
+    padding: 15px;
+    margin: 5px 0px 19px 0px;
+}
+.nav ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+.nav ul li {
+    color: #c3c0b7;
+    font-size: 75%;
+    margin-right: 1%;
+    font-weight: 700;
+    letter-spacing: 0px;
+    display: inline-block;
+}
+.bd{
+    margin: 0 auto;
+    width: 960px;
+    
+}
+.carousel {
+    background-color: #353535;
+    width: 960px;
+    height: 360px;
+    padding: 0px 0px;
+    margin: 3% 0%;
+}
+.carousel-caption{
+    background-color: #ededed;
+    padding: 1px 10px;
+}
+.carousel-caption > p{
+    color: #939393;
+    font-weight: 600;
+    word-spacing: 5px;
+    text-transform: uppercase;
+    line-height: 25px;
+}
+.gallery {
+    margin-top: 6%;
+}
+.gallery-head{
+    color: #96928e;
+    font-weight: bolder;
+    border-bottom: 2px solid #ededed;
+    padding-bottom: 10px;
+}
+.card{
+    border: 1px solid #dedede;
+    display: inline-block;
+}
+.card:nth-child(2) {
+    margin: 0px 10px;
+}
+.card:nth-child(3) {
+    margin: 0px 10px;
+}
+.fig{
+    background-color: #353535;
+    width: 215px;
+    height: 315px;
+    margin: 5px 5px 0px 5px;
+}
+.img-caption {
+    text-align: center;
+    width: 215px;
+    background-color: #ededed;
+    text-transform: uppercase;
+    margin: 0px 5px 5px 5px;
+}
+.img-caption > p {
+    margin: 0px;
+    color: #9d9e9b;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 3% 1%;
+}
+
+#sc3 {
+    background-color: #282828;
+    margin-top: 3%;
+}
+#footer {
+    width: 960px;
+    margin: 0 auto;
+}
+.footer-lt {
+    display: inline-block;
+    clear: both;
+    overflow: hidden;
+}
+.footer-lt p {
+    float: left;
+}
+.footer-rt {
+    display: contents;
+}
+.footer-rt p {
+    float: right;
+}
+.footer-about {
+    color: #8e8e8e;
+    font-weight: 600;
+    font-size: 14px;
+}

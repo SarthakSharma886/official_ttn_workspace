@@ -1,0 +1,99 @@
+#container{
+    margin-left: 10%;
+    margin-right: 10%
+}
+
+#hdr{
+    clear: both;
+    overflow: hidden;
+    border-bottom: 0.5px solid lightgray;
+    margin-bottom: 2%;
+}
+.hd1{
+    float: left;
+    margin: 1% 1%;
+}
+.hd1 span {
+    color: #2b9d9f;
+    font-weight: 500;
+    font-size: x-large;
+}
+.hd2{
+    float: right;
+}
+.hd2 ul{
+    list-style-type: none;
+}
+.hd2 ul li {
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    color: #2b9d9f;
+    display: inline;
+    margin-right: 20px;
+}
+#main{
+    margin:0 auto; 
+    width: 450px;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+.form-head{
+    background-color:#bbc0ca;    ;
+    color: white;
+    padding: 3% 3%;
+    margin: 0px;
+}
+#form-body{
+    margin: 3% 3% 0% 3%;
+}
+div#form-body input, label {
+    display: block;
+}
+.label{
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+.txt1{
+    width: 99%;
+    padding:4px 0px 5px 0px ;
+}
+.slct{
+    width: 100%;
+    padding: 4px;
+    background-color: #00c79c;
+    color: white;
+}
+.sp1{
+    display: inline-block !important;
+    margin-right: 0px;
+}
+.sp2{
+    margin-right: 30%;
+}
+textarea{
+    width: 98%
+}
+input.txt2 {
+    padding: 3px 0px 4px 0px;
+}
+input.sp1 {
+    display: inline !important;
+}
+.txt3{
+    margin-bottom: 1%;
+}
+.form-footer {
+    clear: both;
+    overflow: hidden;
+    background-color: lightgrey;
+    padding: 3% 3% 3% 0%;
+}
+.btn{
+    float: right;
+    background-color: #00c79c;
+    color: white;
+    border-radius: 6px 7px;
+    padding: 7px 15px;
+}
