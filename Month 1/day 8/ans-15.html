@@ -1,0 +1,27 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+<title>Solution 15</title>
+    <meta charset="utf-8">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $("button").click(function(){
+            $.get("https://jsonplaceholder.typicode.com/users", function(data,status){
+              alert("Data Fetched");
+                
+                $("#result").html(JSON.stringify(data));
+            });
+        });
+    });
+
+    </script>
+    </head>
+    <body>
+<h2>Solution 15</h2>
+        <div id="result">
+            <h2>Content of the result DIV box will be replaced by the server data</h2>
+        </div>
+        <button>Get Data</button>
+    </body>
+    </html>

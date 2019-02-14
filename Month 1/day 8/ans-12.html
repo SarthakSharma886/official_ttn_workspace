@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>Solution 12</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+</script>
+</head>
+<body>
+<h2>Solution 12</h2>
+<h1>Animation Effects</h1>
+<br>
+<div>
+<button id="btn1">Parent Element</button>
+<br><br><br>
+
+
+<div class="box" style="background:#98bf21;height:30px;width:30px;margin:6px;"></div>
+</div>
+<br><br><br>
+<div>
+<button id="child">Child Element</button>
+</div>
+
+
+</div>
+<script>
+$(document).ready(function(){
+
+
+$("#btn1").click(function(){
+alert("Clicked on Parent Element ----------> to stop it click on Child Element");
+$(".box").animate({width: "1500px"},10000);
+});
+$("#child").click(function(){
+alert("Clicked on Child Element ----------> Stop is initiated");
+$(".box").stop();
+});
+});
+</script>
+</body>
+</html>
+

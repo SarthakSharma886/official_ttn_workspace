@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Solution 3</title>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("[name$='new']").css({'background-color':'red'});
+  });
+});
+</script>
+
+</head>
+<body>
+
+<h1>Solution 3</h1>
+
+<div>
+	<div name="new"> -new </div>
+	<div name="first"> first</div>
+	<div name="second">second</div>
+	<div name="renew"> -new</div>
+	<div name="third">third</div>
+</div>
+
+<button>Click to change color</button>
+
+</body>
+</html>

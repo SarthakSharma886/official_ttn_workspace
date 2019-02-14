@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Solution 16</title>
+<meta charset="utf-8">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("button").click(function(){
+            $("ol").append("<li>list item <a href='javascript:void(0);' class='remove'>x</a></li>"); 
+        });
+        $(document).on("click", "a.remove" , function() {
+            $(this).parent().remove();
+        });
+    });
+</script>
+</head>
+<body>
+<h1> Solution 16</h1>
+    <button>Add new list item</button>
+    <p>Click the above button to dynamically add new list items. You can remove it later.</p>
+    <ol>
+        <li>list item</li>
+    </ol>
+</body> 
+</html>                            

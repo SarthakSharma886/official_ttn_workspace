@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Solution 17</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+$(function(){	  
+    setInterval(function () {
+        $('#slider').animate({left: 0}, 500, function () {
+            $('#slider img:first-child').appendTo('#slider');
+            $('#slider').css('left', '10');
+    
+        });
+     }, 1000);
+});
+</script>
+<style>
+#slider {
+    position: relative;
+    overflow: hidden;
+    margin: 20px auto;
+    width: 500px;
+    height: 300px;
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title></title>
+</head>
+<body>
+<h2>Solution 17</h2>
+<div id="slider">
+    <img src="https://www.tatnews.org/wp-content/uploads/2016/04/Ko-Samui-500x300-1.jpg"></img>
+    <img src="https://www.tatnews.org/wp-content/uploads/2015/09/Ko-Chang-500x300.jpg"></img> 
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/500_x_300_Ramosmania_rodriguesii_%28Rubiaceae%29.jpg"></img>
+</div>
+</body>
+ </html>
