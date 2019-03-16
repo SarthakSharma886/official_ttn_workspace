@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+xmlns:android="http://schemas.android.com/apk/res/android"
+>
+
+<Preference
+    android:key="basic_preference"
+    android:title="@string/title_basic_preference"
+    android:summary="@string/summary_basic_preference" />
+
+<Preference
+    android:key="stylish_preference"
+    android:title="@string/title_stylish_preference"
+    android:summary="@string/summary_stylish_preference" />
+
+<Preference
+    android:key="preference_with_icon"
+    android:title="Preference with icon"
+    android:summary="This preference has an icon"
+    android:icon="@android:drawable/ic_menu_camera" />
+
+<PreferenceCategory
+    android:title="@string/inline_preferences">
+
+    <CheckBoxPreference
+        android:key="checkbox_preference"
+        android:title="@string/title_checkbox_preference"
+        android:summary="@string/summary_checkbox_preference" />
+
+    <SwitchPreference
+        android:key="switch_preference"
+        android:title="Switch preference"
+        android:summary="This is a switch" />
+
+
+</PreferenceCategory>
+
+<PreferenceCategory
+    android:title="@string/dialog_based_preferences">
+
+    <EditTextPreference
+        android:key="edittext_preference"
+        android:title="@string/title_edittext_preference"
+        android:summary="@string/summary_edittext_preference"
+        android:dialogTitle="@string/dialog_title_edittext_preference" />
+
+
+</PreferenceCategory>
+
+
+
+
+
+</PreferenceScreen>

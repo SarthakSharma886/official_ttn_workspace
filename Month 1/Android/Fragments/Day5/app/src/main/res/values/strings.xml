@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Day 5</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_basic_preference">Basic Preference</string>
+    <string name="summary_basic_preference">Preference basic</string>
+    <string name="title_stylish_preference">stylish preference</string>
+    <string name="summary_stylish_preference">preference stylish</string>
+    <string name="inline_preferences">inline preferences</string>
+    <string name="title_checkbox_preference">checkbox</string>
+    <string name="summary_checkbox_preference">checkbox</string>
+    <string name="dialog_based_preferences">dialog</string>
+    <string name="title_edittext_preference">edittext</string>
+    <string name="summary_edittext_preference">summary</string>
+    <string name="dialog_title_edittext_preference">dialog edittext</string>
+    <string name="title_list_preference">list</string>
+    <string name="launch_preferences">launch</string>
+    <string name="title_screen_preference">title screen</string>
+    <string name="summary_screen_preference">summary</string>
+    <string name="title_next_screen_toggle_preference">checkbox preference</string>
+    <string name="summary_next_screen_toggle_preference">summary</string>
+</resources>
