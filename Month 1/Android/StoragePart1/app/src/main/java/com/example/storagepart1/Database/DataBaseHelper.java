@@ -26,7 +26,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TABLE_NAME+" ("+COLUMN_ID+" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "+COLUMN_NAME+" TEXT, "+COLUMN_PHONE+" INTEGER,"+COLUMN_ADDRESS+" TEXT);");
+        if (db == null) {
+            db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " TEXT, " + COLUMN_PHONE + " INTEGER," + COLUMN_ADDRESS + " TEXT);");
+        }
     }
 
     @Override
@@ -41,13 +43,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_PHONE, dataModel.getMobileNumber());
         contentValues.put(COLUMN_ADDRESS, dataModel.getAddress());
         long i = database.insert(TABLE_NAME, null, contentValues);
-        return (int)i;
+        return (int) i;
     }
 
-    public int updateModel(SQLiteDatabase database,DataModel dataModel) {
-        Log.i("update",dataModel.getUniqueId()+"");
+    public int updateModel(SQLiteDatabase database, DataModel dataModel) {
+        Log.i("update", dataModel.getUniqueId() + "");
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_ID,dataModel.getUniqueId());
+        contentValues.put(COLUMN_ID, dataModel.getUniqueId());
         contentValues.put(COLUMN_NAME, dataModel.getName());
         contentValues.put(COLUMN_PHONE, dataModel.getMobileNumber());
         contentValues.put(COLUMN_ADDRESS, dataModel.getAddress());
@@ -65,22 +67,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public DataModel fetchLast (SQLiteDatabase database){
-
-        DataModel dataModel = new DataModel();
-
-        Cursor cursor = database.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+COLUMN_ID+" = (SELECT MAX("+COLUMN_ID+")  FROM "+TABLE_NAME+")",null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-            Log.i("fetchlast","done");
-            dataModel.setUniqueId(cursor.getInt(0));
-            dataModel.setName(cursor.getString(1));
-            dataModel.setMobileNumber(cursor.getInt(2));
-            dataModel.setAddress(cursor.getString(3));
-        }
-       return dataModel;
-    }
 
     public void deleteModel(SQLiteDatabase database, int id) {
 

@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.storagepart1.R;
+import com.example.storagepart1.sharedpreferences.SharedPreferencesSingleton;
 
 import static android.provider.Telephony.Carriers.PASSWORD;
 import static com.example.storagepart1.Constants.Constants.PASS;
@@ -17,8 +18,7 @@ import static com.example.storagepart1.Constants.Constants.USER_ID;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor mEditor;
+
 
 
     @Override
@@ -29,10 +29,10 @@ public class LoginActivity extends AppCompatActivity {
         final EditText etPass = findViewById(R.id.et_pass);
         Button btLogin = findViewById(R.id.bt_login);
         Button btClear = findViewById(R.id.bt_clear);
-        mSharedPreferences = getPreferences(MODE_PRIVATE);
-        if(mSharedPreferences.contains(USER_ID)){
-            etUserName.setText(mSharedPreferences.getString(USER_ID, ""));
-            etPass.setText(mSharedPreferences.getString(PASS,""));
+        SharedPreferencesSingleton.init(getApplicationContext());
+        if(SharedPreferencesSingleton.contains(USER_ID)){
+            etUserName.setText(SharedPreferencesSingleton.readString(USER_ID));
+            etPass.setText(SharedPreferencesSingleton.readString(PASS));
         }
 
 
@@ -40,10 +40,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                if (!TextUtils.isEmpty(etUserName.getText().toString())&&(!TextUtils.isEmpty(etPass.getText().toString()))){
-                   mEditor = mSharedPreferences.edit();
-                   mEditor.putString(USER_ID, etUserName.getText().toString());
-                   mEditor.putString(PASS, etPass.getText().toString());
-                   mEditor.apply();
+                   SharedPreferencesSingleton.write(USER_ID, etUserName.getText().toString());
+                   SharedPreferencesSingleton.write(PASS, etPass.getText().toString());
                    Toast.makeText(LoginActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
                }
             }
@@ -52,9 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         btClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEditor = mSharedPreferences.edit();
-                mEditor.clear();
-                mEditor.apply();
+               SharedPreferencesSingleton.clear();
                 etPass.setText("");
                 etUserName.setText("");
                 Toast.makeText(LoginActivity.this, "Details Cleared", Toast.LENGTH_SHORT).show();
