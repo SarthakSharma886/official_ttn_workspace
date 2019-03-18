@@ -35,12 +35,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertModel(SQLiteDatabase database, DataModel dataModel) {
+    public int insertModel(SQLiteDatabase database, DataModel dataModel) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME, dataModel.getName());
         contentValues.put(COLUMN_PHONE, dataModel.getMobileNumber());
         contentValues.put(COLUMN_ADDRESS, dataModel.getAddress());
-        database.insert(TABLE_NAME, null, contentValues);
+        long i = database.insert(TABLE_NAME, null, contentValues);
+        return (int)i;
     }
 
     public int updateModel(SQLiteDatabase database,DataModel dataModel) {

@@ -65,6 +65,8 @@ public class CustomDialog extends DialogFragment {
         etMobileNum = view.findViewById(R.id.et_mobile);
         btOk = view.findViewById(R.id.bt_ok);
         btCancel = view.findViewById(R.id.bt_cancel);
+
+
         if (mDataModel != null) {
             etName.setText(mDataModel.getName());
             etAddress.setText(mDataModel.getAddress());
