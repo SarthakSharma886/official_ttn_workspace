@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements IAdapterActivityC
         memployeeDataAddRecyclerAdapter.setiAdapterCommunicator(this);
         mrecyclerView.setAdapter(memployeeDataAddRecyclerAdapter);
         memployeeDataAddRecyclerAdapter.setModels(mmodels);
-        mdataBaseHelper = new DataBaseHelper(this);
+        mdataBaseHelper = new DataBaseHelper(MainActivity.this);
         mDatabase = mdataBaseHelper.getWritableDatabase();
         LoadingPreExistingDataFromDB(mDatabase);
     }

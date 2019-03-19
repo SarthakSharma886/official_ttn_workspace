@@ -6,58 +6,57 @@ import android.content.Context;
 
 import android.content.SharedPreferences;
 
-public class SharedPreferencesSingleton
-{
-    private static SharedPreferences mSharedPref;
-    private static SharedPreferences.Editor mPrefsEditor ;
+public class SharedPreferencesSingleton {
+    private static SharedPreferencesSingleton sharedPreferencesSingleton = null;
 
-    private SharedPreferencesSingleton()
-    {
+    private SharedPreferences mSharedPref;
+
+    private SharedPreferencesSingleton(Context context) {
+        mSharedPref = context.getSharedPreferences("SuperPrefs", Activity.MODE_PRIVATE);
 
     }
 
-    public static void init(Context context)
-    {
-        if(mSharedPref == null)
-            mSharedPref = context.getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
-            mPrefsEditor = mSharedPref.edit();
+    public static SharedPreferencesSingleton init(Context context) {
+        if (sharedPreferencesSingleton == null) {
+            sharedPreferencesSingleton = new SharedPreferencesSingleton(context);
+        }
+        return sharedPreferencesSingleton;
     }
 
 
-    public static boolean contains(String key){
+    public boolean contains(String key) {
         return mSharedPref.contains(key);
     }
 
 
-    public static String readString(String key) {
-        return mSharedPref.getString(key,"");
+    public String readString(String key) {
+        return mSharedPref.getString(key, "");
     }
 
-    public static void write(String key, String value) {
-        SharedPreferences.Editor mPrefsEditor = mSharedPref.edit();
-        mPrefsEditor.putString(key, value);
-        mPrefsEditor.commit();
+    public void write(String key, String value) {
+        mSharedPref.edit().putString(key, value).apply();
+
     }
 
-    public static boolean readBoolean(String key) {
+    public boolean readBoolean(String key) {
         return mSharedPref.getBoolean(key, false);
     }
 
-    public static void write(String key, boolean value) {
-        mPrefsEditor.putBoolean(key, value);
-        mPrefsEditor.commit();
+    public void write(String key, boolean value) {
+        mSharedPref.edit().putBoolean(key, value).apply();
+
     }
 
-    public static int readInt(String key) {
+    public int readInt(String key) {
         return mSharedPref.getInt(key, -1);
     }
 
-    public static void write(String key, int value) {
-        mPrefsEditor.putInt(key, value).commit();
+    public void write(String key, int value) {
+        mSharedPref.edit().putInt(key, value).apply();
     }
 
-    public static void clear(){
-        mPrefsEditor.clear();
-        mPrefsEditor.apply();
+    public void clear() {
+        mSharedPref.edit().clear();
+        mSharedPref.edit().apply();
     }
 }
