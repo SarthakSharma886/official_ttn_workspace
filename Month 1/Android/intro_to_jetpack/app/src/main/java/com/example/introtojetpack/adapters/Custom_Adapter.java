@@ -33,10 +33,7 @@ public class Custom_Adapter extends RecyclerView.Adapter<Custom_Adapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
-        LayoutInflater inflater=(LayoutInflater)viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mBinding = DataBindingUtil.inflate(inflater,R.layout.cardview_recycler, viewGroup, false);
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cardview_recycler,viewGroup,false);
-        return new ViewHolder(view);
+       return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cardview_recycler,viewGroup,false));
     }
 
     @Override
