@@ -2,12 +2,15 @@ package com.example.storagepart2.adapters;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +77,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                     }
                     else {
+
+                        Intent fileIntent = new Intent();
+                        fileIntent.setAction(Intent.ACTION_VIEW);
+                        fileIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        fileIntent.setDataAndType((FileProvider.getUriForFile(v.getContext(),v.getContext().getPackageName()+".provider",file)),getMimeType(file.getAbsolutePath()));
+                        fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        v.getContext().startActivity(fileIntent);
+
                         Toast.makeText(v.getContext(), "this is a file", Toast.LENGTH_SHORT).show();
                     }
 
@@ -105,5 +116,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         }
     }
 
+    private String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
 
 }
