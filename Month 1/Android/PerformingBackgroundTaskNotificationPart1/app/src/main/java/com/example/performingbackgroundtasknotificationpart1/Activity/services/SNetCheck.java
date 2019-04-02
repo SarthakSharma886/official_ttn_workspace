@@ -2,6 +2,8 @@ package com.example.performingbackgroundtasknotificationpart1.Activity.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+
 import com.example.performingbackgroundtasknotificationpart1.Activity.interfaces.IDownloadCancelService;
 
 import java.io.File;
@@ -25,9 +27,11 @@ public class SNetCheck extends IntentService {
         super("Net check service");
     }
 
+    public static volatile Boolean stop = false;
+
     @Override
     protected void onHandleIntent(Intent intent) {
-
+        Intent intentSetProgress = new Intent("downloadProgress");
 
         try {
 
@@ -48,10 +52,9 @@ public class SNetCheck extends IntentService {
                 downloadImage = file.length();
             } else if (file.length() == fullSizeImage) {
 
-                if (mIDownloadCancelService != null) {
-                mIDownloadCancelService.setImageProgress(100);
-                return ;
-                }
+                intentSetProgress.putExtra("progress", 100);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intentSetProgress);
+
             }
             urlConnection.connect();
 
@@ -64,10 +67,16 @@ public class SNetCheck extends IntentService {
 
             while ((count = inputStream.read(buffer)) != -1) {
 
+                if (stop) {
+                    stopSelf();
+                    break;
+
+                }
                 downloadImage += count;
                 int progress = (int) ((downloadImage * 100 / fullSizeImage));
-                if (mIDownloadCancelService != null)
-                    mIDownloadCancelService.setImageProgress(progress);
+                intentSetProgress.putExtra("progress", progress);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intentSetProgress);
+
                 fileOutputStream.write(buffer, 0, count);
 
             }
@@ -88,8 +97,20 @@ public class SNetCheck extends IntentService {
 
     }
 
-    public void setmIDownloadCancelService(IDownloadCancelService iDownloadCancelService){
-        mIDownloadCancelService = iDownloadCancelService;
-    }
+//    @Override
+//    public ComponentName startService(Intent service) {
+//        stop = false;
+//        return super.startService(service);
+//    }
+
+//    @Override
+//    public boolean stopService(Intent name) {
+//
+//        stop = true;
+//
+//        return true;
+//
+//    }
+
 
 }

@@ -2,6 +2,8 @@ package com.example.performingbackgroundtasknotificationpart1.Activity.interface
 
 public interface IDownloadCancelService {
 
-    void setImageProgress(int progress);
+    void startbService();
+
+    void stopbService();
 
 }

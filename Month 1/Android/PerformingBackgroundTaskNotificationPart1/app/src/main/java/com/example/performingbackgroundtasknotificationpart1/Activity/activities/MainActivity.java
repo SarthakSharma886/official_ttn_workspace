@@ -1,6 +1,7 @@
 package com.example.performingbackgroundtasknotificationpart1.Activity.activities;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -8,6 +9,20 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.example.performingbackgroundtasknotificationpart1.Activity.broadcast.BCheckConnectivity;
+import com.example.performingbackgroundtasknotificationpart1.Activity.interfaces.IDownloadCancelAsync;
+import com.example.performingbackgroundtasknotificationpart1.Activity.interfaces.IDownloadCancelService;
+import com.example.performingbackgroundtasknotificationpart1.Activity.services.SNetCheck;
+import com.example.performingbackgroundtasknotificationpart1.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,35 +33,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-
-import com.example.performingbackgroundtasknotificationpart1.Activity.broadcast.BCheckConnectivity;
-import com.example.performingbackgroundtasknotificationpart1.Activity.interfaces.IDownloadCancelAsync;
-import com.example.performingbackgroundtasknotificationpart1.Activity.interfaces.IDownloadCancelService;
-import com.example.performingbackgroundtasknotificationpart1.Activity.services.SNetCheck;
-import com.example.performingbackgroundtasknotificationpart1.R;
-
-
 public class MainActivity extends AppCompatActivity implements IDownloadCancelAsync, IDownloadCancelService {
 
-    public static final String PATH = "/data/data/com.example.performingbackgroundtasknotificationpart1/theekh.png";
-    public static final String IMAGE_URL = "https://www.gstatic.com/webp/gallery3/1.sm.png";
+    public static final String PATH = "/data/data/com.example.performingbackgroundtasknotificationpart1/image.png";
+    public static final String IMAGE_URL = "https://homepages.cae.wisc.edu/~ece533/images/boat.png";
 
     private ProgressBar mProgressBar;
     private ImageView mIvDownload;
     private Async mAsync;
-    private Context mContext;
+    private Boolean mAsyncRunning = false, mServiceRunning = false;
+
     private BCheckConnectivity mCheckConnectivity = new BCheckConnectivity();
-
-
-
+    private Intent i;
+    private BroadcastReceiver getGetLocalBroadcastProgress;
 
 
     @Override
@@ -54,27 +53,43 @@ public class MainActivity extends AppCompatActivity implements IDownloadCancelAs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mContext = this;
-        registerReceiver(mCheckConnectivity,new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-
         Button btDownload = findViewById(R.id.bt_download);
         Button btPause = findViewById(R.id.bt_pause);
         Button btService = findViewById(R.id.bt_service);
         mIvDownload = findViewById(R.id.iv_download);
         mProgressBar = findViewById(R.id.progressBar);
-        SNetCheck sNetCheck = new SNetCheck();
-        sNetCheck.setmIDownloadCancelService(this);
+
+
+        mProgressBar.setVisibility(View.INVISIBLE);
+
+        i = new Intent(MainActivity.this, SNetCheck.class);
+
+
+        getGetLocalBroadcastProgress = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int progress = intent.getIntExtra("progress", 0);
+                mProgressBar.setProgress(progress);
+                if (progress == 100) {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    if (mIvDownload != null) {
+                        Toast.makeText(context, "Downloaded", Toast.LENGTH_SHORT).show();
+                        mIvDownload.setImageDrawable(Drawable.createFromPath(PATH));
+
+                    }
+
+                }
+            }
+        };
+
+        registerReceiver(mCheckConnectivity, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(getGetLocalBroadcastProgress, new IntentFilter("downloadProgress"));
+
 
         findViewById(R.id.bt_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File file = new File(PATH);
-                if(file.exists()) {
-                    file.delete();
-                    if (mIvDownload != null) {
-                        mIvDownload.setImageResource(R.drawable.ic_launcher_background);
-                    }
-                }
+                deleteImage();
             }
         });
 
@@ -83,13 +98,12 @@ public class MainActivity extends AppCompatActivity implements IDownloadCancelAs
             @Override
             public void onClick(View v) {
 
-                if(haveNetworkConnection()) {
+                if (haveNetworkConnection()) {
 
                     download();
                     mCheckConnectivity.setInterface(MainActivity.this);
 
-                }
-                else {
+                } else {
                     Toast.makeText(MainActivity.this, "open wifi or mobile data", Toast.LENGTH_SHORT).show();
                 }
 
@@ -97,12 +111,13 @@ public class MainActivity extends AppCompatActivity implements IDownloadCancelAs
             }
         });
 
-        final Intent i = new Intent(this, SNetCheck.class);
+
         btPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cancel();
-               stopService(i);
+                stopbService();
+
             }
         });
 
@@ -110,15 +125,9 @@ public class MainActivity extends AppCompatActivity implements IDownloadCancelAs
             @Override
             public void onClick(View v) {
 
-                if(haveNetworkConnection()) {
-
-
-                    startService(i);
-
-                }
-                else {
-                    Toast.makeText(MainActivity.this, "open wifi or mobile data", Toast.LENGTH_SHORT).show();
-                }
+                mCheckConnectivity.setMainActivity(MainActivity.this);
+//                mCheckConnectivity.serviceStatus = true;
+                startbService();
 
 
             }
@@ -127,36 +136,64 @@ public class MainActivity extends AppCompatActivity implements IDownloadCancelAs
 
     }
 
-
+    private void deleteImage() {
+        File file = new File(PATH);
+        if (file.exists()) {
+            file.delete();
+            if (mIvDownload != null) {
+                mIvDownload.setImageResource(R.drawable.ic_launcher_background);
+            }
+        }
+    }
 
 
     @Override
     public void download() {
-        mAsync = new Async();
-        mAsync.execute(IMAGE_URL);
+        if (!mAsyncRunning) {
+            mAsync = new Async();
+            mAsync.execute(IMAGE_URL);
+            mAsyncRunning = true;
+        }
     }
 
     @Override
     public void cancel() {
-        if(mAsync !=null)
-        mAsync.cancel(true);
+        if (mAsyncRunning) {
+            if (mAsync != null)
+                mAsync.cancel(true);
+            mAsyncRunning = false;
+        }
     }
 
     @Override
-    public void setImageProgress(int progress) {
+    public void startbService() {
 
-        if (mProgressBar != null) {
 
-            mProgressBar.setProgress(progress);
-            if (progress == 100) {
-                if (mIvDownload != null) {
-                    mIvDownload.setImageDrawable(Drawable.createFromPath(PATH));
-                }
+        if (haveNetworkConnection()) {
 
+            if (!mServiceRunning) {
+
+                SNetCheck.stop = false;
+                startService(i);
+                mProgressBar.setVisibility(View.VISIBLE);
+                mServiceRunning = true;
             }
 
+        } else {
+            Toast.makeText(MainActivity.this, "open wifi or mobile data", Toast.LENGTH_SHORT).show();
         }
 
+
+    }
+
+    @Override
+    public void stopbService() {
+//        stopService(i);
+        if (mServiceRunning) {
+            SNetCheck.stop = true;
+            mProgressBar.setVisibility(View.INVISIBLE);
+            mServiceRunning = false;
+        }
     }
 
 
@@ -176,8 +213,11 @@ public class MainActivity extends AppCompatActivity implements IDownloadCancelAs
 
                 mProgressBar.setProgress(values[0]);
                 if (values[0] == 100) {
+                    mProgressBar.setVisibility(View.INVISIBLE);
                     if (mIvDownload != null) {
+                        Toast.makeText(MainActivity.this, "Downloaded", Toast.LENGTH_SHORT).show();
                         mIvDownload.setImageDrawable(Drawable.createFromPath(PATH));
+
                     }
 
                 }
@@ -271,10 +311,13 @@ public class MainActivity extends AppCompatActivity implements IDownloadCancelAs
         return haveConnectedWifi || haveConnectedMobile;
     }
 
-
-
-
-
+    @Override
+    public void onBackPressed() {
+        cancel();
+        stopbService();
+        deleteImage();
+        super.onBackPressed();
+    }
 }
 
 

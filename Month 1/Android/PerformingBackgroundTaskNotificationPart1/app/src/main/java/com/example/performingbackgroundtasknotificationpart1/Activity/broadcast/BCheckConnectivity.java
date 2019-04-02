@@ -8,36 +8,50 @@ import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import com.example.performingbackgroundtasknotificationpart1.Activity.interfaces.IDownloadCancelAsync;
-import com.example.performingbackgroundtasknotificationpart1.Activity.services.SNetCheck;
+import com.example.performingbackgroundtasknotificationpart1.Activity.interfaces.IDownloadCancelService;
+
 
 public class BCheckConnectivity extends BroadcastReceiver {
     private ConnectivityManager connectivityManager;
     private IDownloadCancelAsync mIDownloadCancelAsync = null;
-    private Boolean serviceStatus = false;
-    private Context mContext;
+    private IDownloadCancelService mIDownloadCancelService = null;
+
+    public void setMainActivity(IDownloadCancelService iDownloadCancelService) {
+
+        mIDownloadCancelService = iDownloadCancelService;
+
+    }
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        mContext = context;
+
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        Intent i = new Intent(context, SNetCheck.class);
-        if (activeNetworkInfo != null && activeNetworkInfo.isConnected() && mIDownloadCancelAsync != null) {
-            mIDownloadCancelAsync.download();
-            if(serviceStatus){
 
-                context.startService(i);
+        if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+
+            Toast.makeText(context, "Network Connected", Toast.LENGTH_SHORT).show();
+
+            if (mIDownloadCancelAsync != null)
+                mIDownloadCancelAsync.download();
+            if (mIDownloadCancelService != null) {
+
+                mIDownloadCancelService.startbService();
+
             }
         } else if (mIDownloadCancelAsync != null) {
-            Toast.makeText(context, "Connectivity lost", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(context, "Network disconnected", Toast.LENGTH_SHORT).show();
             mIDownloadCancelAsync.cancel();
-            context.stopService(i);
+            if (mIDownloadCancelService != null) {
+                mIDownloadCancelService.stopbService();
+            }
+
+
         }
     }
 
-    public void setServiceStatus(Boolean status ){
-        serviceStatus = status;
-    }
 
     public void setInterface(IDownloadCancelAsync iDownloadCancelAsync) {
         mIDownloadCancelAsync = iDownloadCancelAsync;
