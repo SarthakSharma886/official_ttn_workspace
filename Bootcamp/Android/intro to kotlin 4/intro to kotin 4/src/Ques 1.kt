@@ -1,6 +1,10 @@
+/*
 
 
+WAP using Lambda function to calculate the Simple Interest.
 
+
+*/
 
 
 val calculateInterest:(Double,Double,Double)->Double = {p:Double,r:Double,t:Double ->(p*r*t)/100}

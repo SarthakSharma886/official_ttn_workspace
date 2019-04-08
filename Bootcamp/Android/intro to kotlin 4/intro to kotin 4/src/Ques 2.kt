@@ -1,5 +1,8 @@
+/*
 
+Create a list of Employee which will have name and age as properties. print the name of all employees age >30.
 
+*/
 
 class Employee(var name:String,var age:Int)
 
