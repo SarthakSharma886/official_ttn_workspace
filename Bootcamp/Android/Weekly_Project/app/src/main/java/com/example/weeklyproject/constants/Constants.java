@@ -10,6 +10,9 @@ public class Constants {
     public static final String DATAMODEL_SERIALIZABLE_KEY = "datamodel";
     public static final String POSITION_KEY = "position";
 
+    public static final String RETRO_TOKEN = "QpwL5tke4Pnpja7X";
+    public static final String SESSION = "session";
+
     public static final String TABLE_NAME = "Users";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_FIRST_NAME = "first_name";

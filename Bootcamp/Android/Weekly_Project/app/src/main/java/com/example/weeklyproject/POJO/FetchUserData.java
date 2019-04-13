@@ -3,7 +3,9 @@ package com.example.weeklyproject.POJO;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class FetchUserData {
+import java.io.Serializable;
+
+public class FetchUserData implements Serializable {
     @SerializedName("id")
     @Expose
     private Integer id;

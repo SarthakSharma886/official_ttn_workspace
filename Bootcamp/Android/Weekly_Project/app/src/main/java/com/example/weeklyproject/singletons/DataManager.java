@@ -5,13 +5,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.weeklyproject.POJO.AddUpdateUser;
-import com.example.weeklyproject.POJO.GroupingModel;
 import com.example.weeklyproject.POJO.LoginRegisterModel;
 import com.example.weeklyproject.POJO.ResponseToken;
 import com.example.weeklyproject.POJO.UserList;
 import com.example.weeklyproject.interfaces.ApiInterface;
 import com.example.weeklyproject.interfaces.FailureAPICallback;
 import com.example.weeklyproject.interfaces.IDataManageActivity;
+import com.example.weeklyproject.interfaces.ILoginRegister;
 import com.example.weeklyproject.interfaces.SuccessAPICallback;
 import com.example.weeklyproject.retrofit.ResponseHandler;
 import com.example.weeklyproject.retrofit.RetroInstance;
@@ -20,20 +20,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.weeklyproject.constants.Constants.RETRO_TOKEN;
+
 
 public class DataManager {
 
+    private static final DataManager ourInstance = new DataManager();
     IDataManageActivity mIDataManageActivity = null;
+    ILoginRegister mILoginRegister = null;
     ApiInterface mApiInterface = RetroInstance.getInstance().create(ApiInterface.class);
 
-
-    private static final DataManager ourInstance = new DataManager();
+    private DataManager() {
+    }
 
     public static DataManager getInstance() {
         return ourInstance;
-    }
-
-    private DataManager() {
     }
 
     public void checkLogin(String emailId, String pass) {
@@ -50,18 +51,29 @@ public class DataManager {
                 new SuccessAPICallback<ResponseToken>() {
                     @Override
                     public void onResponse(ResponseToken responseToken) {
+                        if (responseToken.getToken().equals(RETRO_TOKEN)) {
+
+                            if (mILoginRegister != null) {
+                                mILoginRegister.doLogin(true);
+                            }
+
+                        }
+
                         Log.v("sarthak", responseToken.getToken());
                     }
                 }, new FailureAPICallback() {
             @Override
             public void onFailure(Object errorCode, Object errorMessage) {
+                if (mILoginRegister != null) {
+                    mILoginRegister.doLogin(false);
+                }
                 Log.v("sarthak", errorMessage.toString());
             }
         }));
 
     }
 
-    public void doRegister(String emailId, String pass) {
+    public void doRegister(final String emailId, final String pass) {
 
         LoginRegisterModel loginRegisterModel = new LoginRegisterModel();
         loginRegisterModel.setEmail(emailId);
@@ -75,11 +87,21 @@ public class DataManager {
                 new SuccessAPICallback<ResponseToken>() {
                     @Override
                     public void onResponse(ResponseToken responseToken) {
+                        if (responseToken.getToken().equals(RETRO_TOKEN)) {
+
+                            if (mILoginRegister != null) {
+                                mILoginRegister.doRegister(emailId, pass, true);
+                            }
+
+                        }
                         Log.v("sarthak", responseToken.getToken());
                     }
                 }, new FailureAPICallback() {
             @Override
             public void onFailure(Object errorCode, Object errorMessage) {
+                if (mILoginRegister != null) {
+                    mILoginRegister.doRegister(emailId, pass, false);
+                }
                 Log.v("sarthak", errorMessage.toString());
             }
         }));
@@ -122,7 +144,7 @@ public class DataManager {
             @Override
             public void onResponse(AddUpdateUser addUpdateUser) {
 
-                Toast.makeText(context.getApplicationContext(), addUpdateUser.getName() + "          " + addUpdateUser.getJob() + "          " + addUpdateUser.getUpdatedAt() , Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), addUpdateUser.getName() + "          " + addUpdateUser.getJob() + "          " + addUpdateUser.getUpdatedAt(), Toast.LENGTH_SHORT).show();
 
             }
         }, new FailureAPICallback() {
@@ -142,7 +164,7 @@ public class DataManager {
         data.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Toast.makeText(context.getApplicationContext(), String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -166,18 +188,24 @@ public class DataManager {
         data.enqueue(new ResponseHandler<UserList>(new SuccessAPICallback<UserList>() {
             @Override
             public void onResponse(UserList userList) {
-                Log.v("sarthak", userList.getData().toString());
+
 //                        mFetchUserDataArrayList = userList.getData();
 
                 if (mIDataManageActivity != null)
-                    mIDataManageActivity.retroResponse(userList);
-
+                    if (!userList.getData().isEmpty()) {
+                        Log.v("sarthak retro pass", userList.getData().toString());
+                        mIDataManageActivity.retroResponse(userList, true);
+                    } else {
+                        Log.v("sarthak retro fail data", userList.getData().toString());
+                        mIDataManageActivity.retroResponse(null, false);
+                    }
 
             }
         }, new FailureAPICallback() {
             @Override
             public void onFailure(Object errorCode, Object errorMessage) {
-                Log.v("sarthak", errorMessage.toString());
+
+                Log.v("sarthak retro fail", errorMessage.toString());
             }
         }));
 
@@ -186,6 +214,10 @@ public class DataManager {
 
     public void setActivity(IDataManageActivity iDataManageActivity) {
         mIDataManageActivity = iDataManageActivity;
+    }
+
+    public void setILoginRegister(ILoginRegister iLoginRegister) {
+        mILoginRegister = iLoginRegister;
     }
 
 }

@@ -10,7 +10,7 @@ public class SharedPreferences {
     private android.content.SharedPreferences mSharedPref;
 
     private SharedPreferences(Context context) {
-        mSharedPref = context.getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
+        mSharedPref = context.getApplicationContext().getSharedPreferences(context.getPackageName(), Activity.MODE_PRIVATE);
 
     }
 

@@ -1,8 +1,6 @@
 package com.example.weeklyproject.retrofit;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.weeklyproject.POJO.GroupingModel;
 import com.example.weeklyproject.interfaces.FailureAPICallback;
@@ -19,8 +17,7 @@ public class ResponseHandler<T extends GroupingModel> implements retrofit2.Callb
     private FailureAPICallback failureAPICallback = null;
 
 
-
-    public ResponseHandler( SuccessAPICallback<T> successAPICallback, FailureAPICallback failureAPICallback) {
+    public ResponseHandler(SuccessAPICallback<T> successAPICallback, FailureAPICallback failureAPICallback) {
         this.failureAPICallback = failureAPICallback;
         this.successAPICallback = successAPICallback;
     }
@@ -40,7 +37,7 @@ public class ResponseHandler<T extends GroupingModel> implements retrofit2.Callb
     @Override
     public void onFailure(Call<T> call, Throwable throwable) {
         String errorMessage = throwable.toString();
-        Log.i("yashwant","error");
+        Log.i("onFailure", "error");
         if (throwable instanceof UnknownHostException || throwable instanceof ConnectException) {
             //showNetworkDialog();
         }
