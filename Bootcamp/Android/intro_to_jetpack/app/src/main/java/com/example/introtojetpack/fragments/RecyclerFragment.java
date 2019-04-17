@@ -1,9 +1,7 @@
 package com.example.introtojetpack.fragments;
 
 
-
 import android.os.Bundle;
-
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 
 import com.example.introtojetpack.R;
 import com.example.introtojetpack.adapters.CustomAdapter;
@@ -25,13 +22,13 @@ import java.util.Date;
  * A simple {@link Fragment} subclass.
  */
 public class RecyclerFragment extends Fragment {
+    ArrayList<Models> arrayList = new ArrayList<>();
+    CustomAdapter customAdapter;
     private RecyclerView recyclerView;
-
 
     public RecyclerFragment() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -45,26 +42,24 @@ public class RecyclerFragment extends Fragment {
     }
 
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        customAdapter = new CustomAdapter(arrayList);
+        setData();
+        recyclerView.setAdapter(customAdapter);
+    }
 
-        ArrayList<Models> arrayList = new ArrayList<>();
+    private void setData() {
+
         Models models = new Models();
         models.setName("hello");
         models.setTimestamp(new SimpleDateFormat("dd MMMM yyyy hh:mm:ss").format(new Date()));
-        arrayList.add(models);
-        arrayList.add(models);
-        arrayList.add(models);
-        arrayList.add(models);
-        arrayList.add(models);
-        arrayList.add(models);
-        arrayList.add(models);
-        arrayList.add(models);
-        arrayList.add(models);
-        CustomAdapter custom_adapter = new CustomAdapter(arrayList);
-        recyclerView.setAdapter(custom_adapter);
+        for (int i = 0; i < 10; i++) {
+            arrayList.add(models);
+        }
+        customAdapter.notifyDataSetChanged();
+
     }
 
 
