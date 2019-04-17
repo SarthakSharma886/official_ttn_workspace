@@ -1,7 +1,6 @@
 package com.example.introtojetpack.adapters;
 
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,33 +15,30 @@ import com.example.introtojetpack.pojo.Models;
 import java.util.ArrayList;
 
 
-public class Custom_Adapter extends RecyclerView.Adapter<Custom_Adapter.ViewHolder> {
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
-    private ArrayList<Models> mArrayListModels;
     CardviewRecyclerBinding mBinding;
+    private ArrayList<Models> mArrayListModels;
 
 
-    public Custom_Adapter(ArrayList<Models> mArrayListModels){
-    this.mArrayListModels = mArrayListModels;
+    public CustomAdapter(ArrayList<Models> mArrayListModels) {
+        this.mArrayListModels = mArrayListModels;
     }
-
-
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
-       return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cardview_recycler,viewGroup,false));
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cardview_recycler, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 
-      Models model = mArrayListModels.get(i);
+        Models model = mArrayListModels.get(i);
 
         mBinding.setRecyclermodel(model);
-
 
 
     }

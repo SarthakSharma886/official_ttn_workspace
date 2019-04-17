@@ -11,11 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 
 import com.example.introtojetpack.R;
-import com.example.introtojetpack.adapters.Custom_Adapter;
+import com.example.introtojetpack.adapters.CustomAdapter;
 import com.example.introtojetpack.pojo.Models;
 
 import java.text.SimpleDateFormat;
@@ -64,7 +63,7 @@ public class RecyclerFragment extends Fragment {
         arrayList.add(models);
         arrayList.add(models);
         arrayList.add(models);
-        Custom_Adapter custom_adapter = new Custom_Adapter(arrayList);
+        CustomAdapter custom_adapter = new CustomAdapter(arrayList);
         recyclerView.setAdapter(custom_adapter);
     }
 
