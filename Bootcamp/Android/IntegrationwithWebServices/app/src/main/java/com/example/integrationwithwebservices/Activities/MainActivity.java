@@ -4,9 +4,9 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -26,10 +26,8 @@ import com.example.integrationwithwebservices.POJO.Post;
 import com.example.integrationwithwebservices.POJO.RetroModel;
 import com.example.integrationwithwebservices.R;
 import com.example.integrationwithwebservices.Retrofit.RetroInstance;
+import com.example.integrationwithwebservices.utils.JSONParser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -39,13 +37,16 @@ import retrofit2.Call;
 public class MainActivity extends AppCompatActivity {
 
 
-    final String BACKGROUND_URL = "https://i.stack.imgur.com/7vMmx.jpg1";
-    final String RECYCLER_URL = "https://storage.googleapis.com/network-security-conf-codelab.appspot.com/v2/posts.json";
+    private final String BACKGROUND_URL = "https://i.stack.imgur.com/7vMmx.jpg1";
+    private final String RECYCLER_URL = "https://storage.googleapis.com/network-security-conf-codelab.appspot.com/v2/posts.json";
+    private final String WIFI_CONNECTIVITY = "WIFI";
+    private final String MOBILE_CONNECTIVITY = "MOBILE";
 
-    ArrayList<Post> mPostArrayList = new ArrayList<>();
-    RecyclerView mRecyclerView;
-    RetroAdapter mRetroAdapter;
-    ConstraintLayout mConstraintLayout;
+
+    private ArrayList<Post> mPostArrayList = new ArrayList<>();
+    private RecyclerView mRecyclerView;
+    private RetroAdapter mRetroAdapter;
+    private ConstraintLayout mConstraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +60,11 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRetroAdapter = new RetroAdapter();
-        mConstraintLayout =  findViewById(R.id.constraint_bg);
+        mConstraintLayout = findViewById(R.id.constraint_bg);
 
+        mRetroAdapter.setRetroAdapterList(mPostArrayList);
+
+        mRecyclerView.setAdapter(mRetroAdapter);
 
         btHttp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,35 +90,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
 
-    public void glideSet(){
+    public void glideSet() {
 
-        if(haveNetworkConnection()) {
+        if (haveNetworkConnection()) {
 
-        Glide.with(this).load(BACKGROUND_URL).into(new SimpleTarget<Drawable>() {
-            @Override
-            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    mConstraintLayout.setBackground(resource);
+            Glide.with(this).load(BACKGROUND_URL).into(new SimpleTarget<Drawable>() {
+                @Override
+                public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        mConstraintLayout.setBackground(resource);
+                    }
                 }
-            }
-        });
-        }
-
-        else {
+            });
+        } else {
             Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
-    public void retroSet(){
+    public void retroSet() {
 
-        if(haveNetworkConnection()) {
+        if (haveNetworkConnection()) {
             Toast.makeText(this, "Using Retrofit", Toast.LENGTH_SHORT).show();
 
             IRetroData iRetroData = RetroInstance.getInstance().create(IRetroData.class);
@@ -124,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(RetroModel retroModel) {
 
                     ArrayList<Post> retroModelPosts = retroModel.getPosts();
-                    mRetroAdapter.setRetroAdapter(retroModelPosts);
-                    mRecyclerView.setAdapter(mRetroAdapter);
+                    mRetroAdapter.setRetroAdapterList(retroModelPosts);
+                    mRetroAdapter.notifyDataSetChanged();
                 }
             }, new FailureAPICallback() {
                 @Override
@@ -133,18 +133,16 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }));
-        }
-
-        else {
-            Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "please turn on your mobile data or wifi", Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
-    public void asyncSet(){
+    public void asyncSet() {
 
-        if(haveNetworkConnection()) {
+        if (haveNetworkConnection()) {
 
             Toast.makeText(this, "Using Http", Toast.LENGTH_SHORT).show();
 
@@ -158,32 +156,16 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
-            try {
-                JSONObject parentObject = new JSONObject(result);
-                JSONArray postArray = parentObject.getJSONArray("posts");
-
-                for (int i = 0; i < postArray.length(); i++) {
-                    JSONObject jsonObject = postArray.getJSONObject(i);
-                    Post post = new Post();
-                    post.setName(jsonObject.getString("name"));
-                    post.setMessage(jsonObject.getString("message"));
-                    post.setProfileImage(jsonObject.getString("profileImage"));
-                    mPostArrayList.add(post);
-                }
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (result!=null) {
+                mPostArrayList = JSONParser.apiDataParser(result);
+                mRetroAdapter.setRetroAdapterList(mPostArrayList);
+                mRetroAdapter.notifyDataSetChanged();
             }
-
-
-            mRetroAdapter.setRetroAdapter(mPostArrayList);
-            mRecyclerView.setAdapter(mRetroAdapter);
-        }
-
-        else {
-            Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+            else {
+                Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "please turn on your mobile data or wifi", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -196,10 +178,10 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
         NetworkInfo[] netInfo = cm.getAllNetworkInfo();
         for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+            if (ni.getTypeName().equalsIgnoreCase(WIFI_CONNECTIVITY))
                 if (ni.isConnected())
                     haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+            if (ni.getTypeName().equalsIgnoreCase(MOBILE_CONNECTIVITY))
                 if (ni.isConnected())
                     haveConnectedMobile = true;
         }

@@ -3,7 +3,6 @@ package com.example.integrationwithwebservices.Adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ public class RetroAdapter extends RecyclerView.Adapter<RetroAdapter.ViewHolder> 
     ArrayList<Post> mPostList;
 
 
-    public void setRetroAdapter( ArrayList<Post> postList){
+    public void setRetroAdapterList( ArrayList<Post> postList){
         this.mPostList = postList;
     }
 
