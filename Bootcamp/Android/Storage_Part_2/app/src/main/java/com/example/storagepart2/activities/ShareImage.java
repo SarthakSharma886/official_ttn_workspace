@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -33,6 +34,7 @@ import java.util.Date;
 public class ShareImage extends AppCompatActivity {
     private final int CAMERA_REQUEST = 201;
     private final int CAMERA_CODE = 101;
+    private final String CONTENT_PROVIDER = ".provider";
     private File mSaveDCIMFile, mSaveInternal;
     private boolean imageClicked = false;
 
@@ -48,22 +50,12 @@ public class ShareImage extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_CODE);
-                        Snackbar snackbar = Snackbar.make((ConstraintLayout) findViewById(R.id.layout_sharing), "Camera permission required ", Snackbar.LENGTH_SHORT);
-                        snackbar.getView().setBackgroundColor(Color.argb(255, 255, 0, 0));
-                        snackbar.setDuration(Snackbar.LENGTH_LONG);
-                        snackbar.setAction("GIVE PERMISSION", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivity(intent);
-                            }
-                        });
-                        snackbar.setActionTextColor(Color.WHITE);
-                        snackbar.show();
+
+
                     } else {
+
+
+
                         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                         mSaveDCIMFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera"
@@ -74,7 +66,7 @@ public class ShareImage extends AppCompatActivity {
 
                         mSaveInternal = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + getPackageName() + "/Saved Images/" + mSaveDCIMFile.getName());
 
-                        captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(v.getContext(), getPackageName() + ".provider", mSaveDCIMFile));
+                        captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(v.getContext(), getPackageName() + CONTENT_PROVIDER, mSaveDCIMFile));
 
                         startActivityForResult(captureIntent, CAMERA_REQUEST);
                     }
@@ -123,6 +115,38 @@ public class ShareImage extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case CAMERA_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "You've granted the permissions!", Toast.LENGTH_SHORT).show();
+
+
+                } else {
+                    Snackbar snackbar = Snackbar.make((ConstraintLayout) findViewById(R.id.layout_sharing), "Camera permission required ", Snackbar.LENGTH_SHORT);
+                    snackbar.getView().setBackgroundColor(Color.argb(255, 255, 0, 0));
+                    snackbar.setDuration(Snackbar.LENGTH_LONG);
+                    snackbar.setAction("GIVE PERMISSION", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        }
+                    });
+                    snackbar.setActionTextColor(Color.WHITE);
+                    snackbar.show();
+
+                }
+                break;
+        }
     }
 
     @Override

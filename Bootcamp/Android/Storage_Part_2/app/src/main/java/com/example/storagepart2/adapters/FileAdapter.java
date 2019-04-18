@@ -1,6 +1,7 @@
 package com.example.storagepart2.adapters;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -75,7 +76,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                     fileIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     fileIntent.setDataAndType((FileProvider.getUriForFile(v.getContext(), v.getContext().getPackageName() + ".provider", file)), getMimeType(file.getAbsolutePath()));
                     fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    v.getContext().startActivity(fileIntent);
+                    try{
+                        v.getContext().startActivity(fileIntent);
+                    }catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    }
 
                     Toast.makeText(v.getContext(), "this is a file", Toast.LENGTH_SHORT).show();
                 }

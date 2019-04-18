@@ -77,22 +77,7 @@ public class MainActivity extends AppCompatActivity implements IListDataExchange
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
             askingPermissions();
-            mSnackbar = Snackbar.make((ConstraintLayout) findViewById(R.id.layout_explorer), "Storage Permission is Mandatory ", Snackbar.LENGTH_SHORT);
-            mSnackbar.getView().setBackgroundColor(Color.argb(255, 255, 0, 0));
-            mSnackbar.setDuration(Snackbar.LENGTH_INDEFINITE);
-            mSnackbar.setAction("GIVE PERMISSION", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.i("toastcheck", "helloboi");
-                    Intent intent = new Intent();
-                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    intent.setData(uri);
-                    startActivity(intent);
-                }
-            });
-            mSnackbar.setActionTextColor(Color.WHITE);
-            mSnackbar.show();
+
 
 
         } else {
@@ -166,6 +151,24 @@ public class MainActivity extends AppCompatActivity implements IListDataExchange
                         mSnackbar.dismiss();
                     }
 
+                }
+                else{
+                    mSnackbar = Snackbar.make((ConstraintLayout) findViewById(R.id.layout_explorer), "Storage Permission is Mandatory ", Snackbar.LENGTH_SHORT);
+                    mSnackbar.getView().setBackgroundColor(Color.argb(255, 255, 0, 0));
+                    mSnackbar.setDuration(Snackbar.LENGTH_INDEFINITE);
+                    mSnackbar.setAction("GIVE PERMISSION", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.i("toastcheck", "helloboi");
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        }
+                    });
+                    mSnackbar.setActionTextColor(Color.WHITE);
+                    mSnackbar.show();
                 }
                 break;
         }
