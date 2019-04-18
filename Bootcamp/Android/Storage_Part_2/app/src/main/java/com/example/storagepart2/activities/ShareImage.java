@@ -17,7 +17,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -55,7 +54,6 @@ public class ShareImage extends AppCompatActivity {
                     } else {
 
 
-
                         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                         mSaveDCIMFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera"
@@ -81,13 +79,8 @@ public class ShareImage extends AppCompatActivity {
             public void onClick(View v) {
                 if (imageClicked) {
 
-                    Intent shareOutside = new Intent();
-                    shareOutside.setAction(Intent.ACTION_SEND);
-                    shareOutside.setType("image/*");
-                    shareOutside.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(v.getContext(), getPackageName() + ".provider", mSaveDCIMFile));
-                    shareOutside.putExtra(Intent.EXTRA_TEXT, "from outside");
-                    shareOutside.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(Intent.createChooser(shareOutside, "Share Outside"));
+                    sendImage(mSaveDCIMFile, "from outside", "Share Outside");
+
                 } else {
                     Toast.makeText(ShareImage.this, "First Capture Image", Toast.LENGTH_SHORT).show();
                 }
@@ -99,13 +92,8 @@ public class ShareImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (imageClicked) {
-                    Intent shareInternal = new Intent();
-                    shareInternal.setAction(Intent.ACTION_SEND);
-                    shareInternal.setType("image/*");
-                    shareInternal.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(v.getContext(), getPackageName() + ".provider", mSaveInternal));
-                    shareInternal.putExtra(Intent.EXTRA_TEXT, "from private");
-                    shareInternal.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(Intent.createChooser(shareInternal, "Share Private"));
+                    sendImage(mSaveDCIMFile, "from private", "Share Private");
+
                 } else {
                     Toast.makeText(ShareImage.this, "First Capture Image", Toast.LENGTH_SHORT).show();
                 }
@@ -114,6 +102,19 @@ public class ShareImage extends AppCompatActivity {
 
         });
 
+
+    }
+
+    private void sendImage(File mSaveDCIMFile, String shareExtraMessage, String shareDisplayMessage) {
+
+
+        Intent shareOutside = new Intent();
+        shareOutside.setAction(Intent.ACTION_SEND);
+        shareOutside.setType("image/*");
+        shareOutside.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(this, getPackageName() + CONTENT_PROVIDER, mSaveDCIMFile));
+        shareOutside.putExtra(Intent.EXTRA_TEXT, shareExtraMessage);
+        shareOutside.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(Intent.createChooser(shareOutside, shareDisplayMessage));
 
     }
 
@@ -161,7 +162,9 @@ public class ShareImage extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+
         }
     }
+
 
 }
